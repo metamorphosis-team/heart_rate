@@ -17,8 +17,6 @@ class HeartRate(db.Model):
         self.heart_rate = heart_rate
 
 if __name__ == '__main__':
-    db.create_all()
-    db.session.commit()
     heart_rate = HeartRate(80)
     db.session.add(heart_rate)
     db.session.commit()
