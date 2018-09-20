@@ -7,14 +7,33 @@
 <script>
 	
 	$(function () {
-		let i = {{ heart_rate }};
-		if(i < 90) {
-			$('#heart').addClass('slow');
-		} else {
-			$('#heart').addClass('faster');
-		}
-		setTimeout("location.reload()", 2000)
+        setInterval(function () {
+            {#heart_rate = get_heart_rate()#}
+            heart_rate = Math.random(80) + 60
+            duration = heart_rate * 100 / 6
+            console.log(duration)
+            var heart = document.querySelector(".animated")
+            heart.style.setProperty("-webkit-animation-duration", toString(duration) + "ms")
+        }, 3000)
 	});
+
+	function get_heart_rate(){
+	      $.ajax({
+            url: 'http://192.168.102.54:4035/gotapi/health/heartRate?accessToken=undefined&serviceId=F3%3A3B%3A15%3A7E%3A29%3ABB.a8e67eb5cd6341bef3872639e61514cc.localhost.deviceconnect.org',
+            type: 'GET',
+            dataType: 'json',
+            // フォーム要素の内容をハッシュ形式に変換
+            timeout: 5000,
+          })
+          .done(function(data) {
+              // 通信成功時の処理を記述
+              return data.heartRate
+          })
+          .fail(function() {
+              // 通信失敗時の処理を記述
+              return -1
+          });
+    }
 </script>
 </head>
 <body>
