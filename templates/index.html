@@ -21,12 +21,18 @@
 
 	function display_heart_rate(){
         //{#heart_rate = get_heart_rate()#}
-        heart_rate = parseInt(Math.random() * 80) + 40
+        heart_rate = parseInt(Math.random() * 120) + 20
         duration = parseInt((60 / heart_rate) * 1000)
-        console.log(duration.toString() + "ms")
         var heart = document.querySelector(".animated")
         heart.style.setProperty("-webkit-animation-duration", duration.toString() + "ms")
         $("#heart_rate").text(parseInt(heart_rate))
+
+        color = get_rgb_color(heart_rate)
+        console.log(heart_rate)
+        console.log(color)
+        $("#heart_rate").css('color', color)
+
+
         var ctx = document.getElementById("myLineChart");
 
         labels.push("");
@@ -36,6 +42,45 @@
         	data.shift();
         }
         display_heart_rate_graph();
+    }
+
+    function get_rgb_color(heart_rate) {
+	    console.log("get_rgb_color")
+	    max_limit = 140.0
+        min_limit = 20.0
+        normal = 80.0
+        r = 0
+        g = 255
+        b = 0
+        if(heart_rate > max_limit){
+            r = 255
+            g = 0
+        }else if(heart_rate < min_limit){
+            g = 0
+            b = 255
+        }else if(heart_rate > normal){
+            diff = heart_rate - normal
+            change_num = (diff / (max_limit - normal)) * 255
+            medium = (max_limit + normal) / 2.0
+            if(change_num > medium){
+                r = 255
+                g = parseInt(g - change_num)
+            }else{
+                r = parseInt(g + change_num)
+            }
+        }else{
+            diff = normal - heart_rate
+            change_num = (diff / (normal - min_limit)) * 255
+            medium = (min_limit + normal) / 2.0
+            if(change_num < medium){
+                b = parseInt(b + change_num)
+            }else{
+                g = parseInt(g - change_num)
+                b = 255
+            }
+        }
+        console.log(g)
+        return "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")"
     }
 
     function display_heart_rate_graph() {
@@ -67,7 +112,8 @@
 		          yAxes: [{
 		              ticks: {
 		                  //最小値を0にする
-		                  beginAtZero: true
+		                  beginAtZero: true,
+                          max: 160
 		              }
 		          }]
 		      },
