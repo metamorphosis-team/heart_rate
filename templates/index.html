@@ -7,15 +7,22 @@
 <script>
 	
 	$(function () {
+	    display_heart_rate()
+
         setInterval(function () {
-            {#heart_rate = get_heart_rate()#}
-            heart_rate = Math.random(80) + 60
-            duration = heart_rate * 100 / 6
-            console.log(duration)
-            var heart = document.querySelector(".animated")
-            heart.style.setProperty("-webkit-animation-duration", toString(duration) + "ms")
+            display_heart_rate()
         }, 3000)
 	});
+
+	function display_heart_rate(){
+        {#heart_rate = get_heart_rate()#}
+        heart_rate = parseInt(Math.random() * 80) + 40
+        duration = parseInt((60 / heart_rate) * 1000)
+        console.log(duration.toString() + "ms")
+        var heart = document.querySelector(".animated")
+        heart.style.setProperty("-webkit-animation-duration", duration.toString() + "ms")
+        $("#heart_rate").text(parseInt(heart_rate))
+    }
 
 	function get_heart_rate(){
 	      $.ajax({
@@ -39,7 +46,7 @@
 <body>
 	<div id="heart_a">
 		<img src="https://raw.githubusercontent.com/metamorphosis-team/heart_rate/master/templates/heart.png" class="animated infinite flash" id="heart" />
-        {{ heart_rate }}
 	</div>
+    <div id="heart_rate"></div>
 </body>
 </html>
