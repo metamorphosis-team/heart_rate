@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" rel="stylesheet" type="text/css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 <script>
 	
 	$(function () {
@@ -11,18 +12,69 @@
 
         setInterval(function () {
             display_heart_rate()
-        }, 3000)
+
+        }, 1000)
 	});
 
+	var labels = [];
+	var data = [];
+
 	function display_heart_rate(){
-        {#heart_rate = get_heart_rate()#}
+        //{#heart_rate = get_heart_rate()#}
         heart_rate = parseInt(Math.random() * 80) + 40
         duration = parseInt((60 / heart_rate) * 1000)
         console.log(duration.toString() + "ms")
         var heart = document.querySelector(".animated")
         heart.style.setProperty("-webkit-animation-duration", duration.toString() + "ms")
         $("#heart_rate").text(parseInt(heart_rate))
+        var ctx = document.getElementById("myLineChart");
+
+        labels.push("");
+        data.push(heart_rate);
+        if(labels.length > 30) {
+        	labels.shift();
+        	data.shift();
+        }
+        display_heart_rate_graph();
     }
+
+    function display_heart_rate_graph() {
+    	var ctx = document.getElementById("id_canvas").getContext('2d');
+        //脈拍グラフ描写
+		var myLineChart = new Chart(ctx, {
+		  //グラフの種類
+		  type: 'line',
+		  //データの設定
+		  data: {
+		      //データ項目のラベル
+		      labels: labels,
+		      //データセット
+		      datasets: [{
+		          //凡例
+		          label: "脈拍数",
+		          //背景色
+		          backgroundColor: "rgba(75,192,192,0.4)",
+		          //枠線の色
+		          borderColor: "rgba(75,192,192,1)",
+		          //グラフのデータ
+		          data: data
+		      }]
+		  },
+		  //オプションの設定
+		  options: {
+		      scales: {
+		          //縦軸の設定
+		          yAxes: [{
+		              ticks: {
+		                  //最小値を0にする
+		                  beginAtZero: true
+		              }
+		          }]
+		      },
+		      animation: false
+		  }
+		});
+	}
 
 	function get_heart_rate(){
 	      $.ajax({
@@ -41,12 +93,16 @@
               return -1
           });
     }
+
 </script>
 </head>
 <body>
-	<div id="heart_a">
+	<div style="display: flex; flex-direction: row; justify-content: center;">
+	    <div id="heart_rate" style="font-size: 20vh; display: flex; align-items: center; margin: 0 8vw"></div>
 		<img src="https://raw.githubusercontent.com/metamorphosis-team/heart_rate/master/templates/heart.png" class="animated infinite flash" id="heart" />
 	</div>
-    <div id="heart_rate"></div>
+    <div id="canvas_wrapper" style="position: absolute; height: 40vh; width: 60vw; margin-left: 17vw">
+		<canvas id="id_canvas"></canvas>
+	</div>
 </body>
 </html>
