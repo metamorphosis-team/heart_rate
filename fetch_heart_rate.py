@@ -26,7 +26,7 @@ class HeartRateFetcher:
 
     # テストデータ取得用
     @classmethod
-    def add_heart_rate_permanently(cls, interval_sec=3):
+    def add_heart_rate_permanently(cls, interval_sec=1):
         for i in range(10000):
             cls.add_heart_rate()
             sleep(interval_sec)
