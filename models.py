@@ -16,6 +16,7 @@ class HeartRate(db.Model):
     def __init__(self, heart_rate):
         self.heart_rate = heart_rate
 
+
 if __name__ == '__main__':
     heart_rate = HeartRate(80)
     db.session.add(heart_rate)

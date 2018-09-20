@@ -7,18 +7,20 @@
 <script>
 	
 	$(function () {
-		let i = 90;
-		if(i < 80) {
+		let i = {{ heart_rate }};
+		if(i < 90) {
 			$('#heart').addClass('slow');
 		} else {
 			$('#heart').addClass('faster');
-		}	
+		}
+		setTimeout("location.reload()", 2000)
 	});
 </script>
 </head>
 <body>
 	<div id="heart_a">
-		<img src="./heart.png" class="animated infinite flash" id="heart" />
+		<img src="https://raw.githubusercontent.com/metamorphosis-team/heart_rate/master/templates/heart.png" class="animated infinite flash" id="heart" />
+        {{ heart_rate }}
 	</div>
 </body>
 </html>
