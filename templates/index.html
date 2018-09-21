@@ -6,6 +6,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 <script>
+    var current_heart_rate = 0;
+    function get_heart_rate(){
+	      $.ajax({
+            url: 'http://192.168.102.54:4035/gotapi/health/heartRate?accessToken=undefined&serviceId=F3%3A3B%3A15%3A7E%3A29%3ABB.a8e67eb5cd6341bef3872639e61514cc.localhost.deviceconnect.org',
+            type: 'GET',
+            dataType: 'json',
+            // フォーム要素の内容をハッシュ形式に変換
+            timeout: 5000,
+          })
+          .done(function(data) {
+              // 通信成功時の処理を記述
+              var result = data.heartRate;
+              console.log("get:" + result);
+              //return result;
+              current_heart_rate = result;
+          })
+          .fail(function() {
+              // 通信失敗時の処理を記述
+              console.log(　"this　error")
+              return -1
+          });
+    }
 	
 	$(function () {
 	    display_heart_rate()
@@ -20,20 +42,18 @@
 	var data = [];
 
 	function display_heart_rate(){
-        //{#heart_rate = get_heart_rate()#}
-        heart_rate = parseInt(Math.random() * 120) + 20
-        duration = parseInt((60 / heart_rate) * 1000)
+        get_heart_rate()
+	    var heart_rate = current_heart_rate;
+        console.log("display:" + current_heart_rate)
+        {#heart_rate = parseInt(Math.random() * 120) + 20#}
+        var duration = parseInt((60 / heart_rate) * 1000)
         var heart = document.querySelector(".animated")
         heart.style.setProperty("-webkit-animation-duration", duration.toString() + "ms")
         $("#heart_rate").text(parseInt(heart_rate))
 
-        color = get_rgb_color(heart_rate)
-        console.log(heart_rate)
-        console.log(color)
+        var color = get_rgb_color(heart_rate)
         $("#heart_rate").css('color', color)
 
-
-        var ctx = document.getElementById("myLineChart");
 
         labels.push("");
         data.push(heart_rate);
@@ -46,12 +66,12 @@
 
     function get_rgb_color(heart_rate) {
 	    console.log("get_rgb_color")
-	    max_limit = 140.0
-        min_limit = 20.0
-        normal = 80.0
-        r = 0
-        g = 255
-        b = 0
+	    var max_limit = 140.0
+        var min_limit = 20.0
+        var normal = 80.0
+        var r = 0
+        var g = 255
+        var b = 0
         if(heart_rate > max_limit){
             r = 255
             g = 0
@@ -112,8 +132,8 @@
 		          yAxes: [{
 		              ticks: {
 		                  //最小値を0にする
-		                  beginAtZero: true,
-                          max: 160
+		                  min: 60,
+                          max: 120
 		              }
 		          }]
 		      },
@@ -122,23 +142,6 @@
 		});
 	}
 
-	function get_heart_rate(){
-	      $.ajax({
-            url: 'http://192.168.102.54:4035/gotapi/health/heartRate?accessToken=undefined&serviceId=F3%3A3B%3A15%3A7E%3A29%3ABB.a8e67eb5cd6341bef3872639e61514cc.localhost.deviceconnect.org',
-            type: 'GET',
-            dataType: 'json',
-            // フォーム要素の内容をハッシュ形式に変換
-            timeout: 5000,
-          })
-          .done(function(data) {
-              // 通信成功時の処理を記述
-              return data.heartRate
-          })
-          .fail(function() {
-              // 通信失敗時の処理を記述
-              return -1
-          });
-    }
 
 </script>
 </head>
